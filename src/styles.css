@@ -1,0 +1,8 @@
+/* You can add global styles to this file, and also import other style files */
+.page-header {
+    font-size: 1.9rem;
+    border: 0px;
+    border-bottom: 1px solid;
+    margin-bottom: 1.5rem;
+    border-color: inherit;
+}

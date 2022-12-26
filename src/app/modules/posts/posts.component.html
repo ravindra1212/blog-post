@@ -1,0 +1,74 @@
+<div class="flex">
+    <div class="flex-column-first">
+        <div class="page-header">
+            Posts
+            <button pButton type="button" label="Add Post" icon="pi pi-plus" class="mx-1 p-button-sm float-end"
+                (click)="openAddPostDialog()"></button>
+        </div>
+        <div>
+            <p-table [value]="posts">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th *ngFor="let col of cols">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-post>
+                    <tr>
+                        <td *ngFor="let col of cols">
+
+                            <ng-container *ngIf="col.field == 'action'">
+                                <button pButton type="button" label="Edit" icon="pi pi-pencil" 
+                                    class="mx-1 p-button-sm" (click)="openEditPostDialog(post)"></button>
+                                <button pButton type="button" label="Delete" icon="pi pi-trash" 
+                                    class="mx-1 p-button-sm p-button-danger"></button>
+                            </ng-container>
+
+                            <ng-container else>
+                                {{post[col.field]}}
+                            </ng-container>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<!-- ADD OR EDIT POST FORM -->
+<p-dialog [header]="formTitle" [(visible)]="display" position="top" appendTo="body">
+    
+    <form [formGroup]="postForm">
+
+        <!-- Title Input Field -->
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" formControlName="title" />
+        </div>
+        <!-- /Title Input Field -->
+
+        <!-- Description Input Field -->
+        <div class="form-group mt-4">
+            <label for="body">Description</label>
+            <textarea rows="5" class="form-control" cols="30" id="body" formControlName="body"></textarea>
+        </div>
+        <!-- /Description Input Field -->
+
+        <!-- Form Action -->
+        <div class="form-group mt-2">
+
+            <button pButton type="button" label="Cancel" 
+                    class="p-button p-button-sm p-button-secondary float-start" (click)="closeDialog()"></button>
+
+            <button pButton type="submit" [label]="formBtnLabel" class="float-end p-button p-button-sm"></button>
+
+        </div>
+        <!-- /Form Action -->
+
+    </form>
+
+</p-dialog>
+<!-- /ADD OR EDIT POST FORM -->
+
+
