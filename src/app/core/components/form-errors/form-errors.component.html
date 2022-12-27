@@ -1,0 +1,25 @@
+<div *ngIf="formObject.get(controlName).invalid">
+
+    <span class="text-danger float-end italic" 
+        *ngIf="formObject.get(controlName).hasError('required')">
+        field is required.
+    </span>
+
+    <span *ngIf="formObject.get(controlName).hasError('min')"
+        class="text-danger float-end italic">
+        Value must be less or equal to {{ formObject.get(controlName).getError('min').min }} number.
+    </span>
+
+    <span *ngIf="formObject.get(controlName).hasError('max')" class="text-danger float-end italic">
+        Value may not be greater than {{ formObject.get(controlName).getError('max').max }} number.
+    </span>
+
+    <span *ngIf="formObject.get(controlName).hasError('minlength')" class="text-danger float-end italic">
+        Value must be less or equal to {{ formObject.get(controlName).getError('minlength').requiredLength }} charectors.
+    </span>
+
+    <span *ngIf="formObject.get(controlName).hasError('maxLength')" class="text-danger float-end italic">
+        Value may not be greater than {{ formObject.get(controlName).getError('maxLength').requiredLength }} charectors.
+    </span>
+
+</div>

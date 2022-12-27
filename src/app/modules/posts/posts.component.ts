@@ -16,6 +16,7 @@ export class PostsComponent implements OnInit {
     display:boolean = false;
     formTitle:any;
     formBtnLabel:string = '';
+    isFormSubmitted : boolean = false;;
 
     constructor(
         private httpService : HttpService,
@@ -44,7 +45,7 @@ export class PostsComponent implements OnInit {
 
         this.postForm = this.formBuilder.group({
             id      : [''],
-            title   : ['', [Validators.required, Validators.minLength(2)]],
+            title   : ['r', [Validators.required, Validators.minLength(2)]],
             body    : ['', [Validators.required, Validators.minLength(5)]],
             userId  : [this.authService.getUserId()],
         });
@@ -91,18 +92,10 @@ export class PostsComponent implements OnInit {
     }
 
     /**
-     * Add new Post
+     * Add Or Update Post
      * @return void
      */
-    submit() {
-
-    }
-    
-    /**
-     * Update Post
-     * @return void
-     */
-    update() {
+    saveOrUpdate() {
 
     }
     

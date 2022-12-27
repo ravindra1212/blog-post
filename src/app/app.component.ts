@@ -2,6 +2,7 @@ import { NotifyService } from 'src/app/services/notify.service';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
+import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
     selector: 'app-root',
@@ -15,11 +16,12 @@ export class AppComponent implements OnInit {
     constructor(
         public authService: AuthService,
         private router : Router,
-        private notifyService : NotifyService
+        private notifyService : NotifyService,
+        private primengConfig: PrimeNGConfig
     ) {}
 
     ngOnInit(): void {
-        
+        this.primengConfig.ripple = true;
     }
 
     /**

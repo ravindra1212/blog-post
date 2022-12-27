@@ -13,11 +13,9 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { PostsModule } from './modules/posts/posts.module';
-import { FormErrorsComponent } from './cors/components/form-errors/form-errors.component';
 
 @NgModule({
     declarations: [
-        FormErrorsComponent,
         AppComponent,
         LoginComponent,
         HomeComponent,

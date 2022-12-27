@@ -7,6 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { FormErrorsComponent } from 'src/app/core/components/form-errors/form-errors.component';
 
 @NgModule({
     declarations: [
@@ -14,6 +15,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     ],
     imports: [
         CommonModule,
+        FormErrorsComponent,
         TableModule,
         ButtonModule,
         ReactiveFormsModule,
