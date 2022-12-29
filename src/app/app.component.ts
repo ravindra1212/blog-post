@@ -1,7 +1,7 @@
-import { NotifyService } from 'src/app/services/notify.service';
+import { NotifyService } from 'src/app/core/services/notify.service';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './core/services/auth.service';
 import { PrimeNGConfig } from 'primeng/api';
 
 @Component({

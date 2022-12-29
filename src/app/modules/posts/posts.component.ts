@@ -1,7 +1,11 @@
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/services/auth.service';
-import { HttpService } from 'src/app/services/http.service';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { HttpService } from 'src/app/core/services/http.service';
+import { ConfirmPopupService } from './../../core/services/confirmPopup.service';
+import { NotifyService } from '../../core/services/notify.service';
+import { has } from 'lodash-es';
 
 @Component({
     selector: 'app-posts',
@@ -16,12 +20,15 @@ export class PostsComponent implements OnInit {
     display:boolean = false;
     formTitle:any;
     formBtnLabel:string = '';
-    isFormSubmitted : boolean = false;;
+    inProgressForm : boolean = false;
+    postId = '';
 
     constructor(
         private httpService : HttpService,
         private formBuilder : FormBuilder,
-        private authService : AuthService
+        private authService : AuthService,
+        private notifyService: NotifyService,
+        private confirmPopupService: ConfirmPopupService
     ) {
         this.createForm(); // Init Form Object
     }
@@ -44,8 +51,8 @@ export class PostsComponent implements OnInit {
     private createForm() {
 
         this.postForm = this.formBuilder.group({
-            id      : [''],
-            title   : ['r', [Validators.required, Validators.minLength(2)]],
+            _id     : [''],
+            title   : ['', [Validators.required, Validators.minLength(2)]],
             body    : ['', [Validators.required, Validators.minLength(5)]],
             userId  : [this.authService.getUserId()],
         });
@@ -58,8 +65,7 @@ export class PostsComponent implements OnInit {
     private getPosts() {
 
         this.httpService.get('http://localhost:3000/api/posts', (responseData:any) => {
-            this.posts = responseData.posts;
-            console.log(this.posts, responseData);
+            this.posts = responseData.data;
         });
 
     }
@@ -85,17 +91,32 @@ export class PostsComponent implements OnInit {
         this.formTitle = `Edit Post : ${post.title}`;
         this.formBtnLabel = 'Update';
         this.postForm.patchValue(post);
-        console.log({
-            post: post
-        });
 
     }
 
     /**
      * Add Or Update Post
+     * @postId string | null
      * @return void
      */
-    saveOrUpdate() {
+    saveOrUpdate(postId:string) {
+        
+        let url:any = '';
+
+        if (postId) { // has post unique id 
+            url = `http://localhost:3000/api/update-post/${postId}`;
+        } else {
+            url  `http://localhost:3000/api/add-post`;
+        }
+
+        this.httpService.postForm(url, this.postForm.value, (response:any) => {
+
+            console.log({
+                response: response
+            });
+
+            this.notifyService.success(response.message);
+        });
 
     }
     
@@ -104,8 +125,26 @@ export class PostsComponent implements OnInit {
      * @return void
      */
     closeDialog() {
-
         this.display = false;
+        this.postForm.reset();
+    }
+
+    /**
+     * Request to server for Delete a Post
+     * @param postId string
+     * @return void
+     */
+    deletePost(event:object, postId:string) {
+
+        this.confirmPopupService.confirm(event, {
+            message : 'Are you sure you want to delete this post.'
+        }, (accepResponse:any) => {
+            this.httpService.delete(`http://localhost:3000/api/post/${postId}`, {}, (response: any) => {
+                this.notifyService.success(response.message);
+            });
+        }, (rejectResponse: any) => {
+
+        });
 
     }
 

@@ -5,7 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
@@ -13,6 +13,8 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { PostsModule } from './modules/posts/posts.module';
+
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
 
 @NgModule({
     declarations: [
@@ -26,12 +28,13 @@ import { PostsModule } from './modules/posts/posts.module';
         BrowserAnimationsModule,
         HttpClientModule,
         ToastModule,
+        ConfirmPopupModule,
         ReactiveFormsModule,
         HttpClientModule,
         AppRoutingModule,
         PostsModule
     ],
-    providers: [MessageService],
+    providers: [MessageService, ConfirmationService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

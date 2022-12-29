@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'app-form-errors',
@@ -10,22 +10,9 @@ import { Component, Input, OnInit } from '@angular/core';
         CommonModule
     ]
 })
-export class FormErrorsComponent implements OnInit {
+export class FormErrorsComponent {
 
     @Input('formObject') formObject:any;
     @Input('controlName') controlName:any;
-
-    ngOnInit() {
-
-        console.log({
-            formObject: this.formObject.get(this.controlName).errors
-        });
-
-
-        console.log({
-            controlName: this.controlName
-        });
-    }
-
     
 }
