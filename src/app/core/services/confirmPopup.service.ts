@@ -15,8 +15,9 @@ export class ConfirmPopupService {
     confirm(event: any, object: any, acceptCallback: any, rejectCallback: any = null) {
 
         this.confirmationService.confirm({
-            target: event.target,
-            message: object.message,
+            target  : event.target,
+            message : object?.message,
+            icon    : object?.icon,
             accept: (accept:any) => {
                 // confirm action
                 if (isFunction(acceptCallback)) {
@@ -30,6 +31,7 @@ export class ConfirmPopupService {
                 }
             }
         });
+        
     }
 
 }

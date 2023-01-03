@@ -74,7 +74,8 @@ export class PostsComponent implements OnInit {
      * Open Add New Post Dialog
      * @return void
      */
-    openAddPostDialog() {
+    openAddNewPostDialog() {
+        
         this.display = true;
         this.formTitle = `Add New Post`;
         this.formBtnLabel   = 'Submit';
@@ -101,12 +102,12 @@ export class PostsComponent implements OnInit {
      */
     saveOrUpdate(postId:string) {
         
-        let url:any = '';
+        let url:string;
 
         if (postId) { // has post unique id 
             url = `http://localhost:3000/api/update-post/${postId}`;
         } else {
-            url  `http://localhost:3000/api/add-post`;
+            url = `http://localhost:3000/api/add-post`;
         }
 
         this.httpService.postForm(url, this.postForm.value, (response:any) => {
@@ -115,7 +116,11 @@ export class PostsComponent implements OnInit {
                 response: response
             });
 
+            this.closeDialog(); // Close Dialog after sucess
+
             this.notifyService.success(response.message);
+
+            this.getPosts(); // Load 
         });
 
     }
@@ -131,20 +136,21 @@ export class PostsComponent implements OnInit {
 
     /**
      * Request to server for Delete a Post
+     * @param event object
      * @param postId string
      * @return void
      */
     deletePost(event:object, postId:string) {
 
         this.confirmPopupService.confirm(event, {
-            message : 'Are you sure you want to delete this post.'
-        }, (accepResponse:any) => {
-            this.httpService.delete(`http://localhost:3000/api/post/${postId}`, {}, (response: any) => {
+            message : 'Are you sure you want to delete this post.',
+        }, 
+        (accepResponse:any) => {
+            this.httpService.delete(`http://localhost:3000/api/post-delete/${postId}`, {}, (response: any) => {
                 this.notifyService.success(response.message);
+                this.getPosts(); // Load 
             });
-        }, (rejectResponse: any) => {
-
-        });
+        }, (rejectResponse: any) => {});
 
     }
 

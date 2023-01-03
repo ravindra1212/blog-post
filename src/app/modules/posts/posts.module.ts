@@ -8,6 +8,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FormErrorsComponent } from 'src/app/core/components/form-errors/form-errors.component';
+import { PostsRoutesModule } from './posts.routing';
 
 @NgModule({
     declarations: [
@@ -21,7 +22,8 @@ import { FormErrorsComponent } from 'src/app/core/components/form-errors/form-er
         ReactiveFormsModule,
         DialogModule,
         InputTextModule,
-        InputTextareaModule
+        InputTextareaModule,
+        PostsRoutesModule
     ]
 })
 export class PostsModule { }

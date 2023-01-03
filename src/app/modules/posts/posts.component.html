@@ -3,7 +3,7 @@
         <div class="page-header">
             Posts
             <button pButton type="button" label="Add Post" icon="pi pi-plus" class="mx-1 p-button-sm float-end"
-                (click)="openAddPostDialog()"></button>
+                (click)="openAddNewPostDialog()"></button>
         </div>
         <div>
             <p-table [value]="posts" styleClass="p-datatable-gridlines">
@@ -28,6 +28,13 @@
                             <ng-container else>
                                 {{post[col.field]}}
                             </ng-container>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage" let-columns>
+                    <tr>
+                        <td [attr.colspan]="3" class="text-center">
+                            No records found
                         </td>
                     </tr>
                 </ng-template>

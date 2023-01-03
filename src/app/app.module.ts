@@ -12,8 +12,6 @@ import { AppRoutingModule } from './app.routing';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
-import { PostsModule } from './modules/posts/posts.module';
-
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 
 @NgModule({
@@ -31,8 +29,7 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
         ConfirmPopupModule,
         ReactiveFormsModule,
         HttpClientModule,
-        AppRoutingModule,
-        PostsModule
+        AppRoutingModule    
     ],
     providers: [MessageService, ConfirmationService],
     bootstrap: [AppComponent]
