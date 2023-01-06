@@ -9,10 +9,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FormErrorsComponent } from 'src/app/core/components/form-errors/form-errors.component';
 import { PostsRoutesModule } from './posts.routing';
+import { CommentsComponent } from './comments/comments.component';
+import { TimelineModule } from 'primeng/timeline';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
     declarations: [
-        PostsComponent
+        PostsComponent,
+        CommentsComponent
     ],
     imports: [
         CommonModule,
@@ -23,7 +27,9 @@ import { PostsRoutesModule } from './posts.routing';
         DialogModule,
         InputTextModule,
         InputTextareaModule,
-        PostsRoutesModule
+        PostsRoutesModule,
+        TimelineModule,
+        CardModule
     ]
 })
 export class PostsModule { }

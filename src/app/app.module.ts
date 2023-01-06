@@ -13,6 +13,7 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { NgxSpinnerModule } from "ngx-spinner";
 
 @NgModule({
     declarations: [
@@ -29,6 +30,7 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
         ConfirmPopupModule,
         ReactiveFormsModule,
         HttpClientModule,
+        NgxSpinnerModule.forRoot(),
         AppRoutingModule    
     ],
     providers: [MessageService, ConfirmationService],

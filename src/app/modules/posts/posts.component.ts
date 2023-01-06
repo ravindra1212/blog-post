@@ -1,3 +1,5 @@
+import { SpinnerService } from './../../core/services/spinner.service';
+import { Router } from '@angular/router';
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -28,7 +30,9 @@ export class PostsComponent implements OnInit {
         private formBuilder : FormBuilder,
         private authService : AuthService,
         private notifyService: NotifyService,
-        private confirmPopupService: ConfirmPopupService
+        private confirmPopupService: ConfirmPopupService,
+        private router : Router,
+        private spinnerService: SpinnerService
     ) {
         this.createForm(); // Init Form Object
     }
@@ -105,9 +109,9 @@ export class PostsComponent implements OnInit {
         let url:string;
 
         if (postId) { // has post unique id 
-            url = `http://localhost:3000/api/update-post/${postId}`;
+            url = `http://localhost:3000/api/posts/${postId}/update`;
         } else {
-            url = `http://localhost:3000/api/add-post`;
+            url = `http://localhost:3000/api/posts/add`;
         }
 
         this.httpService.postForm(url, this.postForm.value, (response:any) => {
@@ -146,12 +150,21 @@ export class PostsComponent implements OnInit {
             message : 'Are you sure you want to delete this post.',
         }, 
         (accepResponse:any) => {
-            this.httpService.delete(`http://localhost:3000/api/post-delete/${postId}`, {}, (response: any) => {
+            this.httpService.delete(`http://localhost:3000/api/posts/${postId}/delete`, {}, (response: any) => {
                 this.notifyService.success(response.message);
                 this.getPosts(); // Load 
             });
         }, (rejectResponse: any) => {});
 
+    }
+
+    /**
+     * View Comments
+     * @param postId - number
+     * @return void
+     */
+    viewComments(postId:any) {
+        this.router.navigate([`./posts/${postId}/comments`]);
     }
 
 }

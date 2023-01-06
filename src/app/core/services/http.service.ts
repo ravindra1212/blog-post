@@ -1,3 +1,4 @@
+import { SpinnerService } from './spinner.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NotifyService } from './notify.service';
@@ -10,7 +11,8 @@ export class HttpService {
 
     constructor(
         private httpClient : HttpClient,
-        private notifyService : NotifyService
+        private notifyService : NotifyService,
+        private spinnerService : SpinnerService
     ) {}
 
     /**
@@ -64,14 +66,21 @@ export class HttpService {
      */
     postForm(url: string, object: object, callback: any) {
 
+        this.spinnerService.show(); // Show spinner
+
         return this.httpClient.post(url, object).subscribe({
             next: response => {
+
+                this.spinnerService.hide(); // Hide Spinner
 
                 if (isFunction(callback)) {
                     callback.call(this, response);
                 }
             },
             error: error => {
+
+                this.spinnerService.hide(); // Hide Spinner
+                
                 this.notifyService.error(error.message);
             }
         });

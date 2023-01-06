@@ -19,10 +19,17 @@
                         <td *ngFor="let col of cols">
 
                             <ng-container *ngIf="col.field == 'action'">
+
                                 <button pButton type="button" label="Edit" icon="pi pi-pencil" 
                                     class="mx-1 p-button-sm" (click)="openEditPostDialog(post)"></button>
+
                                 <button pButton type="button" label="Delete" icon="pi pi-trash" 
                                     class="mx-1 p-button-sm p-button-danger" (click)="deletePost($event, post._id)"></button>
+
+                                <button pButton type="button" label="View Comments" icon="pi pi-comments" 
+                                    class="m-1 p-button-sm p-button-info"
+                                    (click)="viewComments(post._id)"></button>
+
                             </ng-container>
 
                             <ng-container else>
@@ -42,7 +49,6 @@
         </div>
     </div>
 </div>
-
 <!-- ADD OR EDIT POST FORM -->
 <p-dialog [header]="formTitle" [(visible)]="display" [modal]="true" [style]="{width: '50vw'}"
     [draggable]="false" [resizable]="false" position="top">

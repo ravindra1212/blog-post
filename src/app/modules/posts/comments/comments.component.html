@@ -1,0 +1,25 @@
+<div class="page-header">
+    Post Details
+</div>
+<div class="row">
+    <div class="col">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                   {{ postDetails.title }}
+                    <hr>
+                </h5>
+                <p class="card-text">
+                    Post Description :{{ postDetails.body }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+
+    <div class="col">
+        {{ comments | json  }}
+    </div>
+
+</div>
