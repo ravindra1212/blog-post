@@ -2,7 +2,7 @@ import { SpinnerService } from './../../core/services/spinner.service';
 import { Router } from '@angular/router';
 
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { HttpService } from 'src/app/core/services/http.service';
 import { ConfirmPopupService } from './../../core/services/confirmPopup.service';
@@ -24,6 +24,10 @@ export class PostsComponent implements OnInit {
     formBtnLabel:string = '';
     inProgressForm : boolean = false;
     postId = '';
+    uploadedFiles: any[] = [];
+    showUploadButton : boolean = false;
+    showCancelButton: boolean = false;
+    multiple: boolean = true;
 
     constructor(
         private httpService : HttpService,
@@ -58,6 +62,7 @@ export class PostsComponent implements OnInit {
             _id     : [''],
             title   : ['', [Validators.required, Validators.minLength(2)]],
             body    : ['', [Validators.required, Validators.minLength(5)]],
+            postMedia : new FormArray([]),
             userId  : [this.authService.getUserId()],
         });
     } 
@@ -113,7 +118,9 @@ export class PostsComponent implements OnInit {
         } else {
             url = `http://localhost:3000/api/posts/add`;
         }
-
+        console.log({
+            value: this.postForm.value
+        });
         this.httpService.postForm(url, this.postForm.value, (response:any) => {
 
             console.log({
@@ -165,6 +172,49 @@ export class PostsComponent implements OnInit {
      */
     viewComments(postId:any) {
         this.router.navigate([`./posts/${postId}/comments`]);
+    }
+
+    /**
+     * On Select File
+     * @param event - select file object
+     * @return void
+     */
+    onSelectFile(event:any) {
+
+        let files = [];
+
+        for (let file of event.files) {
+            files.push(file);
+        }
+        
+        if (files.length > 0) { 
+            this.postForm.get('postMedia').patchValue(files);
+        }
+
+        console.log({
+            postForm: this.postForm.get('postMedia').value
+        });
+
+    }
+
+    /**
+     * Get callback of remove uploaded file
+     * @param event - object
+     * @return void
+     */
+    onRemoveSelectedFile(event: any) {
+
+        let files = [];
+
+        for (let file of this.postForm.value.postMedia) {
+
+            if (file.name !== event.file.name) {
+                files.push(file);
+            }
+        }
+
+        this.postForm.get('postMedia').patchValue(files);
+
     }
 
 }

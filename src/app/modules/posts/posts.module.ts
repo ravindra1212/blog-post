@@ -12,6 +12,7 @@ import { PostsRoutesModule } from './posts.routing';
 import { CommentsComponent } from './comments/comments.component';
 import { TimelineModule } from 'primeng/timeline';
 import { CardModule } from 'primeng/card';
+import { FileUploadModule } from 'primeng/fileupload';
 
 @NgModule({
     declarations: [
@@ -29,7 +30,8 @@ import { CardModule } from 'primeng/card';
         InputTextareaModule,
         PostsRoutesModule,
         TimelineModule,
-        CardModule
+        CardModule,
+        FileUploadModule
     ]
 })
 export class PostsModule { }

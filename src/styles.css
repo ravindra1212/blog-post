@@ -6,3 +6,11 @@
     margin-bottom: 1.5rem;
     border-color: #dfdfdf;
 }
+
+.p-dialog-header {
+    box-shadow: -8px 0px 7px 0px #6464641f;
+}
+
+.p-dialog-footer {
+    box-shadow: 0px -8px 7px 0px #6464641f;
+}

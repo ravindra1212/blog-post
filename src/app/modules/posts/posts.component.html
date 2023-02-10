@@ -50,11 +50,14 @@
     </div>
 </div>
 <!-- ADD OR EDIT POST FORM -->
-<p-dialog [header]="formTitle" [(visible)]="display" [modal]="true" [style]="{width: '50vw'}"
-    [draggable]="false" [resizable]="false" position="top">
-    
-    <form [formGroup]="postForm" (ngSubmit)="saveOrUpdate(postForm.get('_id').value)">
-
+<p-dialog [header]="formTitle" 
+    [(visible)]="display" [breakpoints]="{'960px': '75vw'}" 
+    [modal]="true"
+    [style]="{width: '50vw'}"
+    position="top"
+>   
+    <form [formGroup]="postForm" class="py-3">
+        
         <!-- Title Input Field -->
         <div class="form-group">
             <label for="title">Title</label>
@@ -62,7 +65,15 @@
             <app-form-errors [formObject]="postForm" controlName="title"></app-form-errors>
         </div>
         <!-- /Title Input Field -->
-
+        
+        <div class="form-group mt-5">
+            <p-fileUpload name="myfile[]" [showUploadButton]="showUploadButton" 
+                [showCancelButton]="showCancelButton"
+                [multiple]="multiple" 
+                (onSelect)="onSelectFile($event)"
+                (onRemove)="onRemoveSelectedFile($event)"></p-fileUpload>
+        </div>
+        
         <!-- Description Input Field -->
         <div class="form-group mt-4">
             <label for="body">Description</label>
@@ -71,15 +82,24 @@
         </div>
         <!-- /Description Input Field -->
 
-        <!-- Form Action -->
-        <div class="form-group mt-4">
-            <button pButton pRipple type="button" (click)="closeDialog()" label="Cancel" class="float-start p-button-raised p-button-secondary"></button>
-            <button pButton pRipple type="submit" [label]="formBtnLabel" [disabled]="postForm.invalid" [loading]="inProgressForm" class="float-end p-button-raised"></button>
-        </div>
-        <!-- /Form Action -->
-
     </form>
 
+    <!-- Form Action -->
+    <ng-template pTemplate="footer">
+
+        <button pButton pRipple type="button" (click)="closeDialog()" label="Cancel"
+            class="float-start p-button-raised p-button-secondary"></button>
+
+        <button pButton pRipple type="button" 
+            [label]="formBtnLabel" 
+            [disabled]="postForm.invalid" 
+            [loading]="inProgressForm"
+            class="float-end p-button-raised"
+            (click)="saveOrUpdate(postForm.get('_id').value)"></button>
+
+    </ng-template>
+    <!-- /Form Action -->
+    
 </p-dialog>
 <!-- /ADD OR EDIT POST FORM -->
 
