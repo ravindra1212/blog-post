@@ -1,20 +1,19 @@
-import { SpinnerService } from './../../core/services/spinner.service';
 import { Router } from '@angular/router';
 
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/core/services/auth.service';
-import { HttpService } from 'src/app/core/services/http.service';
-import { ConfirmPopupService } from './../../core/services/confirmPopup.service';
-import { NotifyService } from '../../core/services/notify.service';
-import { has } from 'lodash-es';
+import { FormArray, FormBuilder, Validators } from '@angular/forms';
+import { Select, Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
+import { Post } from './posts.interface';
+import { PostState } from './posts.state';
+import { BaseComponent } from '@core/components/base/base.component';
 
 @Component({
     selector: 'app-posts',
     templateUrl: './posts.component.html',
     styleUrls: ['./posts.component.css']
 })
-export class PostsComponent implements OnInit {
+export class PostsComponent extends BaseComponent implements OnInit {
 
     posts: Array<any>[] = [];
     cols: any[] = [];
@@ -28,20 +27,21 @@ export class PostsComponent implements OnInit {
     showUploadButton : boolean = false;
     showCancelButton: boolean = false;
     multiple: boolean = true;
+    // @Select(PostState.getPostList) posts!: Observable<Post[]>;
 
     constructor(
-        private httpService : HttpService,
         private formBuilder : FormBuilder,
-        private authService : AuthService,
-        private notifyService: NotifyService,
-        private confirmPopupService: ConfirmPopupService,
-        private router : Router,
-        private spinnerService: SpinnerService
+        private store: Store
     ) {
+        super();
         this.createForm(); // Init Form Object
     }
 
     ngOnInit(): void {
+
+        console.log({
+            superFunction : this
+        });
 
         this.cols = [
             { field: 'title', header: 'Title' },
@@ -50,6 +50,10 @@ export class PostsComponent implements OnInit {
         ];
 
         this.getPosts(); // Load 
+
+        // this.store.dispatch(new GetPosts());
+
+        console.log(this.posts);
     }
 
     /**
@@ -63,7 +67,7 @@ export class PostsComponent implements OnInit {
             title   : ['', [Validators.required, Validators.minLength(2)]],
             body    : ['', [Validators.required, Validators.minLength(5)]],
             postMedia : new FormArray([]),
-            userId  : [this.authService.getUserId()],
+            userId  : [this.baseAuthService.getUserId()],
         });
     } 
 
@@ -73,7 +77,7 @@ export class PostsComponent implements OnInit {
      */
     private getPosts() {
 
-        this.httpService.get('http://localhost:3000/api/posts', (responseData:any) => {
+        this.baseHttpService.get('http://localhost:3000/api/posts', (responseData:any) => {
             this.posts = responseData.data;
         });
 
@@ -102,6 +106,8 @@ export class PostsComponent implements OnInit {
         this.formBtnLabel = 'Update';
         this.postForm.patchValue(post);
 
+        // this.store.dispatch(new SetSelectedPost(post));
+
     }
 
     /**
@@ -118,22 +124,35 @@ export class PostsComponent implements OnInit {
         } else {
             url = `http://localhost:3000/api/posts/add`;
         }
-        console.log({
-            value: this.postForm.value
-        });
-        this.httpService.postForm(url, this.postForm.value, (response:any) => {
-
-            console.log({
-                response: response
-            });
+        
+        this.baseHttpService.postForm(url, this.postForm.value, (response:any) => {
 
             this.closeDialog(); // Close Dialog after sucess
 
-            this.notifyService.success(response.message);
+            this.baseNotifyService.success(response.message);
 
             this.getPosts(); // Load 
         });
 
+        // if (postId) {
+        //     this.store.dispatch(new UpdatePost(this.postForm.value, this.postForm.value._id)).subscribe(() => {
+        //         this.clearForm();
+        //     });
+        // } else {
+        //     this.store.dispatch(new AddPost(this.postForm.value)).subscribe(() => {
+        //         this.clearForm();
+        //     });
+        // }
+
+    }
+
+    /**
+     * Reset Form
+     * @return void
+     */
+    clearForm() {
+        this.postForm.reset();
+        // this.store.dispatch(new SetSelectedPost(undefined));
     }
     
     /**
@@ -153,14 +172,18 @@ export class PostsComponent implements OnInit {
      */
     deletePost(event:object, postId:string) {
 
-        this.confirmPopupService.confirm(event, {
+        this.baseConfirmPopupService.confirm(event, {
             message : 'Are you sure you want to delete this post.',
         }, 
         (accepResponse:any) => {
-            this.httpService.delete(`http://localhost:3000/api/posts/${postId}/delete`, {}, (response: any) => {
-                this.notifyService.success(response.message);
+
+            this.baseHttpService.delete(`http://localhost:3000/api/posts/${postId}/delete`, {}, (response: any) => {
+                this.baseNotifyService.success(response.message);
                 this.getPosts(); // Load 
             });
+
+            // this.store.dispatch(new DeletePost(postId));
+
         }, (rejectResponse: any) => {});
 
     }
@@ -171,7 +194,7 @@ export class PostsComponent implements OnInit {
      * @return void
      */
     viewComments(postId:any) {
-        this.router.navigate([`./posts/${postId}/comments`]);
+        this.baseRouter.navigate([`./posts/${postId}/comments`]);
     }
 
     /**
@@ -190,10 +213,6 @@ export class PostsComponent implements OnInit {
         if (files.length > 0) { 
             this.postForm.get('postMedia').patchValue(files);
         }
-
-        console.log({
-            postForm: this.postForm.get('postMedia').value
-        });
 
     }
 

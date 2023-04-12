@@ -1,3 +1,5 @@
+import { HttpClientModule } from '@angular/common/http';
+import { NgxsModule } from '@ngxs/store';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostsComponent } from './posts.component';
@@ -7,12 +9,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { FormErrorsComponent } from 'src/app/core/components/form-errors/form-errors.component';
+import { FormErrorsComponent } from '@core/components/form-errors/form-errors.component';
 import { PostsRoutesModule } from './posts.routing';
 import { CommentsComponent } from './comments/comments.component';
 import { TimelineModule } from 'primeng/timeline';
 import { CardModule } from 'primeng/card';
 import { FileUploadModule } from 'primeng/fileupload';
+import { PostState } from './posts.state';
+import { PostsService } from './posts.service';
 
 @NgModule({
     declarations: [
@@ -21,6 +25,7 @@ import { FileUploadModule } from 'primeng/fileupload';
     ],
     imports: [
         CommonModule,
+        NgxsModule.forFeature([PostState]),
         FormErrorsComponent,
         TableModule,
         ButtonModule,
@@ -31,7 +36,9 @@ import { FileUploadModule } from 'primeng/fileupload';
         PostsRoutesModule,
         TimelineModule,
         CardModule,
-        FileUploadModule
-    ]
+        FileUploadModule,
+        HttpClientModule
+    ],
+    providers:[PostsService]
 })
 export class PostsModule { }

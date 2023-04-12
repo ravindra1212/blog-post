@@ -1,4 +1,4 @@
-import { NotifyService } from 'src/app/core/services/notify.service';
+import { NotifyService } from '@core/services/notify.service';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './core/services/auth.service';

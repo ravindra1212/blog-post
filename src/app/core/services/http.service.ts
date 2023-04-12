@@ -7,7 +7,7 @@ import isFunction from 'lodash/isFunction';
 @Injectable({
     providedIn: 'root'
 })
-export class HttpService {
+export abstract class HttpService {
 
     constructor(
         private httpClient : HttpClient,
@@ -16,12 +16,12 @@ export class HttpService {
     ) {}
 
     /**
-     * Fetach data from server
+     * Fetch data from server
      * @param url - string
      * @param callback - function
      * @return Object | Void
      */
-    get(url: string, callback: any): any  {
+    public get(url: string, callback: any): any  {
 
         return this.httpClient.get(url).subscribe({
             next: response => {
@@ -43,7 +43,7 @@ export class HttpService {
      * @param data - function
      * @return Object | Void
      */
-    post(url:string, object:object, callback: any) {
+    public post(url:string, object:object, callback: any) {
 
         return this.httpClient.post(url, object).subscribe({
             next: response => {
@@ -53,6 +53,7 @@ export class HttpService {
                 }
             },
             error: error => {
+                
                 this.notifyService.error(error.message);
             }
         });
@@ -64,7 +65,7 @@ export class HttpService {
      * @param data - function
      * @return Object | Void
      */
-    postForm(url: string, object: object, callback: any) {
+    public postForm(url: string, object: object, callback: any) {
 
         this.spinnerService.show(); // Show spinner
 
@@ -80,7 +81,7 @@ export class HttpService {
             error: error => {
 
                 this.spinnerService.hide(); // Hide Spinner
-                
+
                 this.notifyService.error(error.message);
             }
         });
@@ -92,7 +93,7 @@ export class HttpService {
      * @param data - function
      * @return Object | Void
      */
-    delete(url: string, object: object, callback: any) {
+    public delete(url: string, object: object, callback: any) {
 
         return this.httpClient.delete(url, object).subscribe({
             next : response => {
@@ -106,4 +107,5 @@ export class HttpService {
             }
         });
     }
+
 }

@@ -1,24 +1,19 @@
-import { HttpService } from 'src/app/core/services/http.service';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { PrimeIcons } from 'primeng/api';
+import { BaseComponent } from '@core/components/base/base.component';
 
 @Component({
   selector: 'app-comments',
   templateUrl: './comments.component.html',
   styleUrls: ['./comments.component.css']
 })
-export class CommentsComponent implements OnInit {
+export class CommentsComponent extends BaseComponent implements OnInit {
 
     postId = 1;
     comments = [];
     postDetails:any;
     
-    constructor(
-        private httpService : HttpService,
-        private router : ActivatedRoute
-    ) {
-
+    constructor() {
+        super();
     }
 
     ngOnInit() {
@@ -37,7 +32,7 @@ export class CommentsComponent implements OnInit {
      */
     private getComments() {
 
-        this.httpService.get(`https://jsonplaceholder.typicode.com/posts/${this.postId}/comments`, (response:any) => {
+        this.baseHttpService.get(`https://jsonplaceholder.typicode.com/posts/${this.postId}/comments`, (response:any) => {
             this.comments = response;
         });
 
@@ -49,7 +44,7 @@ export class CommentsComponent implements OnInit {
      */
     private getPostDetails() {
 
-        this.httpService.get(`https://jsonplaceholder.typicode.com/posts/${this.postId}`, (response: any) => {
+        this.baseHttpService.get(`https://jsonplaceholder.typicode.com/posts/${this.postId}`, (response: any) => {
             this.postDetails = response;
         });
     }
