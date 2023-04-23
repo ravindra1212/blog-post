@@ -27,6 +27,11 @@ export class PostsComponent extends BaseComponent implements OnInit {
     showUploadButton : boolean = false;
     showCancelButton: boolean = false;
     multiple: boolean = true;
+    parentScope:any;
+    totalRecords:number = 1;
+    postsPerPage:number = 1;
+    currentPage: number = 0;
+
     // @Select(PostState.getPostList) posts!: Observable<Post[]>;
 
     constructor(
@@ -39,46 +44,50 @@ export class PostsComponent extends BaseComponent implements OnInit {
 
     ngOnInit(): void {
 
-        console.log({
-            superFunction : this
-        });
-
         this.cols = [
+            { field: 'imagePath', header: 'Image' },
             { field: 'title', header: 'Title' },
             { field: 'body', header: 'Description' },
             { field: 'action', header: 'Action' }
         ];
 
-        this.getPosts(); // Load 
+        this.getPosts(this.postsPerPage, 1); // Load 
 
         // this.store.dispatch(new GetPosts());
-
-        console.log(this.posts);
     }
 
     /**
      * Create Form
      * @return void
      */
-    private createForm() {
+    private createForm(): void {
 
         this.postForm = this.formBuilder.group({
             _id     : [''],
             title   : ['', [Validators.required, Validators.minLength(2)]],
             body    : ['', [Validators.required, Validators.minLength(5)]],
-            postMedia : new FormArray([]),
+            files   : [],
             userId  : [this.baseAuthService.getUserId()],
         });
     } 
 
     /**
+     * Getter of Post Media form Object
+     * @return Object
+     */
+    private get getFilesControls() {
+        return this.postForm.get('files') as FormArray;
+    }
+
+    /**
      * Get the posts
      * @retun void 
      */
-    private getPosts() {
-
-        this.baseHttpService.get('http://localhost:3000/api/posts', (responseData:any) => {
+    private getPosts(pagesize: number, page:number): void {
+        
+        this.baseHttpService.get(`http://localhost:3000/api/posts?page=${page}&pagesize=${pagesize}`, (responseData:any) => {
             this.posts = responseData.data;
+            this.totalRecords = responseData.totalPosts;
         });
 
     }
@@ -87,7 +96,7 @@ export class PostsComponent extends BaseComponent implements OnInit {
      * Open Add New Post Dialog
      * @return void
      */
-    openAddNewPostDialog() {
+    openAddNewPostDialog(): void {
         
         this.display = true;
         this.formTitle = `Add New Post`;
@@ -115,7 +124,7 @@ export class PostsComponent extends BaseComponent implements OnInit {
      * @postId string | null
      * @return void
      */
-    saveOrUpdate(postId:string) {
+    saveOrUpdate(postId: string): void {
         
         let url:string;
 
@@ -125,13 +134,16 @@ export class PostsComponent extends BaseComponent implements OnInit {
             url = `http://localhost:3000/api/posts/add`;
         }
         
-        this.baseHttpService.postForm(url, this.postForm.value, (response:any) => {
+        this.baseHttpService.postForm(url, {
+            payload  : this.postForm.value,
+            formData : true
+        }, (response:any) => {
 
             this.closeDialog(); // Close Dialog after sucess
 
             this.baseNotifyService.success(response.message);
 
-            this.getPosts(); // Load 
+            this.getPosts(this.postsPerPage, this.currentPage); // Load 
         });
 
         // if (postId) {
@@ -150,7 +162,7 @@ export class PostsComponent extends BaseComponent implements OnInit {
      * Reset Form
      * @return void
      */
-    clearForm() {
+    clearForm(): void {
         this.postForm.reset();
         // this.store.dispatch(new SetSelectedPost(undefined));
     }
@@ -159,7 +171,7 @@ export class PostsComponent extends BaseComponent implements OnInit {
      * Close Dialog
      * @return void
      */
-    closeDialog() {
+    closeDialog(): void {
         this.display = false;
         this.postForm.reset();
     }
@@ -170,7 +182,7 @@ export class PostsComponent extends BaseComponent implements OnInit {
      * @param postId string
      * @return void
      */
-    deletePost(event:object, postId:string) {
+    deletePost(event:object, postId:string) : void {
 
         this.baseConfirmPopupService.confirm(event, {
             message : 'Are you sure you want to delete this post.',
@@ -179,7 +191,7 @@ export class PostsComponent extends BaseComponent implements OnInit {
 
             this.baseHttpService.delete(`http://localhost:3000/api/posts/${postId}/delete`, {}, (response: any) => {
                 this.baseNotifyService.success(response.message);
-                this.getPosts(); // Load 
+                this.getPosts(this.postsPerPage, this.currentPage); // Load 
             });
 
             // this.store.dispatch(new DeletePost(postId));
@@ -203,15 +215,11 @@ export class PostsComponent extends BaseComponent implements OnInit {
      * @return void
      */
     onSelectFile(event:any) {
-
-        let files = [];
-
-        for (let file of event.files) {
-            files.push(file);
-        }
         
-        if (files.length > 0) { 
-            this.postForm.get('postMedia').patchValue(files);
+        if (event.currentFiles.length > 0) { 
+
+            this.postForm.get('files').patchValue(event.currentFiles[0]);
+            this.getFilesControls.updateValueAndValidity();
         }
 
     }
@@ -221,19 +229,31 @@ export class PostsComponent extends BaseComponent implements OnInit {
      * @param event - object
      * @return void
      */
-    onRemoveSelectedFile(event: any) {
+    onRemoveSelectedFile(event: any) : void {
 
-        let files = [];
+        let index = 0;
 
-        for (let file of this.postForm.value.postMedia) {
+        for (let value of this.getFilesControls.value) {
 
-            if (file.name !== event.file.name) {
-                files.push(file);
+            if (value.name == event.file.name) {
+                this.getFilesControls.removeAt(index);
             }
+
+            index++;
         }
 
-        this.postForm.get('postMedia').patchValue(files);
+    }
 
+    /**
+     * 
+     * @param event 
+     * @return void
+     */
+    onPageChange(event:any) {
+        this.currentPage = event.page;
+        this.postsPerPage = event.rows;
+        console.log(event, this.currentPage);
+        this.getPosts(this.postsPerPage, event.currentPage);
     }
 
 }

@@ -14,5 +14,7 @@ export class FormErrorsComponent {
 
     @Input('formObject') formObject:any;
     @Input('controlName') controlName:any;
+    @Input('firstFieldLabel') firstFieldLabel:any;
+    @Input('secondFieldLabel') secondFieldLabel: any;
     
 }

@@ -1,11 +1,12 @@
-import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule, Injector } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule } from '@angular/forms';
 
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { CoreModule } from './core/core.module';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
@@ -17,18 +18,22 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { NgxsModule } from '@ngxs/store';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { ServiceLocator } from '@core-services/service-locator.service';
+import { SignupComponent } from './components/signup/signup.component';
+import { FormErrorsComponent } from '@core/components/form-errors/form-errors.component';
+import { AuthInterceptor } from './services/auth-interceptor';
 
 @NgModule({
     declarations: [
         AppComponent,
         LoginComponent,
+        SignupComponent,
         HomeComponent,
         PageNotFoundComponent
     ],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
-        HttpClientModule,
+        CoreModule,
         ToastModule,
         ConfirmPopupModule,
         ReactiveFormsModule,
@@ -36,11 +41,21 @@ import { ServiceLocator } from '@core-services/service-locator.service';
         NgxSpinnerModule.forRoot(),
         AppRoutingModule,
         NgxsModule.forRoot(),
-        NgxsLoggerPluginModule.forRoot(),    
+        NgxsLoggerPluginModule.forRoot(), 
+        FormErrorsComponent // Standalone Component
+
         // NgxsReduxDevtoolsPluginModule.forRoot(),
 
     ],
-    providers: [MessageService, ConfirmationService],
+    providers: [
+        MessageService, 
+        ConfirmationService,
+        {
+            provide :HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi:true
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { 

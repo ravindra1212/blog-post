@@ -1,31 +1,83 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/post');
+const multer = require('multer');
+const checkAuth = require('../middleware/check-auth');
+const MIME_TYPE_MAP = {
+    'image/png'  : 'png',
+    'image/png'  : 'png',
+    'image/jpg'  : 'jpg',
+    'image/jpeg' : 'jpeg'
+};
+
+const storagePath = `backend/images`;
+
+const storage = multer.diskStorage({
+    destination : (req, file, cb) => {
+        const isValid = MIME_TYPE_MAP[file.mimetype];
+        let error = new Error("Invalid mime type");
+
+        if (isValid) {
+            error = null;
+        }
+
+        cb(error, storagePath);
+    },
+    filename: (req, file, cb) => {
+        const name = file.originalname.toLowerCase().split(' ').join('-');
+        const ext = MIME_TYPE_MAP[file.mimetype];
+        cb(null, name);
+    }
+})
 
 // Fetch all post from DB 
-router.get('/', (req, res, next) => {
+router.get('/', checkAuth, (req, res, next) => {
+    const pageSize    = +req.query.pagesize;
+    const currentPage = +req.query.page;
+    const postQuery   = Post.find();
+
+    let fetchedPosts;
+
+    if (pageSize && currentPage) { // apllying pagination logic
+        postQuery.skip(pageSize * (currentPage - 1))
+                 .limit(pageSize);
+    }
 
     // Fetch all Posts
-    Post.find()
+    postQuery
         .then( (collection) => {
+
+            collection.map( data => {
+                data.imagePath = data.imagePath ? `${req.protocol}://${req.get('host')}/${storagePath}/${data.imagePath} ` : '';
+            });
+
+            fetchedPosts = collection;
+
+            return Post.count();   
+        })
+        .then( (count) => {
+
             res.status(200).json({
-                data : collection
+                data : fetchedPosts,
+                totalPosts : count
             });
         });
 
 });
 
 // Save Post in DB
-router.post('/add', (req, res, next) => {
-    
+router.post('/add', checkAuth, multer({storage: storage}).single('files'), (req, res, next) => {
+
     const post = new Post({
-        title : req.body.title,
-        body  : req.body.body
+        title     : req.body.title,
+        body      : req.body.body,
+        imagePath : req.file ? req.file.filename : ''
     });
 
     // Save Post in DB
     post.save()
         .then( (collection) => {
+
             res.status(200).json({
                 message : 'Post added sucessfully.',
                 data    : collection
@@ -42,7 +94,7 @@ router.post('/add', (req, res, next) => {
 });
 
 // Delete Post Route
-router.delete('/:postId/delete', (req, res, next) => {
+router.delete('/:postId/delete', checkAuth, (req, res, next) => {
 
     Post.deleteOne({'_id' : req.params.postId })
         .then( (collection) => {
@@ -61,7 +113,7 @@ router.delete('/:postId/delete', (req, res, next) => {
 });
 
 // Update Post in DB
-router.post('/:postId/update', (req, res, next) => {
+router.post('/:postId/update', checkAuth, (req, res, next) => {
 
     Post.findOneAndUpdate({'_id' : req.params.postId }, req.body)
         .then( (updated) => {

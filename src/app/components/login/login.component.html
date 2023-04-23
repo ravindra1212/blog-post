@@ -1,38 +1,26 @@
 <div class=" card p-4">
     <div class="card-heading">
-        <h2 class="text-center">Login</h2>
+        <h2 class="text-center">Signin</h2>
         <hr>
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="shadow p-3 mb-5 bg-white rounded p-5">
 
         <div class="form-group">
-            <label for="userId">User ID</label>
-            <input type="number" class="form-control" formControlName="userId" autocomplete="off" />
-            <div *ngIf="
-                !loginForm.controls.userId?.valid &&
-                (loginForm.controls.userId?.dirty ||
-                loginForm.controls.userId?.touched)
-            ">
-                <span class="text-danger">User ID is not valid</span>
-            </div>
+            <label for="email">Email</label>
+            <input type="text" class="form-control" formControlName="email" autocomplete="off" />
+            <app-form-errors [formObject]="loginForm" controlName="email"></app-form-errors>
         </div>
 
         <div class="form-group mt-4">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" formControlName="email" autocomplete="off" />
-            <div *ngIf="
-                !loginForm.controls.email?.valid &&
-                (loginForm.controls.email?.dirty ||
-                loginForm.controls.email?.touched)
-                ">
-                <span class="text-danger">Email is not valid</span>
-            </div>
+            <label for="password">Password</label>
+            <input type="password" class="form-control" formControlName="password" autocomplete="off" />
+            <app-form-errors [formObject]="loginForm" controlName="password"></app-form-errors>
         </div>
 
         <div class="d-grid gap-2 mt-4">
             <button type="submit" [disabled]="loginForm.invalid" class="btn btn-success btn-sm btn-block">
-                Submit
+                Signin
             </button>
         </div>
 

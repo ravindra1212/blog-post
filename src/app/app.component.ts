@@ -3,24 +3,25 @@ import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './core/services/auth.service';
 import { PrimeNGConfig } from 'primeng/api';
+import { BaseComponent } from '@core/components/base/base.component';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent extends BaseComponent implements OnInit {
 
     title = 'blog-post';
-
-    constructor(
-        public authService: AuthService,
-        private router : Router,
-        private notifyService : NotifyService,
-        private primengConfig: PrimeNGConfig
-    ) {}
+    
+    constructor(private primengConfig: PrimeNGConfig) { 
+        super(); 
+    }
 
     ngOnInit(): void {
+
+        this.baseAuthService.autoLoginUser();
+
         this.primengConfig.ripple = true;
     }
 
@@ -30,11 +31,11 @@ export class AppComponent implements OnInit {
      */
     signOut() : void {
 
-        if (this.authService.doSignOut()) {
+        if (this.baseAuthService.doSignOut()) {
 
-            this.notifyService.success('User loggedOut Sucessfully.');
+            this.baseNotifyService.success('User loggedOut Sucessfully.');
 
-            this.router.navigate(['./login']);
+            this.baseRouter.navigate(['./login']);
         }
         
     }

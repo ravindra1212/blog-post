@@ -11,7 +11,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 @Component({
   template: ''
 })
-export abstract class BaseComponent  {
+export abstract class BaseComponent implements OnInit, OnDestroy {
 
     /**
     * This injected services can use across all derived components
@@ -23,14 +23,29 @@ export abstract class BaseComponent  {
     protected baseRouter: Router;
     protected baseActivatedRoute : ActivatedRoute
 
+
+    /**
+     * Define event for communication
+     */
+
     constructor() {
-        this.baseHttpService = ServiceLocator.injector.get(HttpService);
-        this.baseNotifyService = ServiceLocator.injector.get(NotifyService);
+        this.baseHttpService         = ServiceLocator.injector.get(HttpService);
+        this.baseNotifyService       = ServiceLocator.injector.get(NotifyService);
         this.baseConfirmPopupService = ServiceLocator.injector.get(ConfirmPopupService);
-        this.baseAuthService = ServiceLocator.injector.get(AuthService);
-        this.baseRouter = ServiceLocator.injector.get(Router);
-        this.baseActivatedRoute = ServiceLocator.injector.get(ActivatedRoute);
+        this.baseAuthService         = ServiceLocator.injector.get(AuthService);
+        this.baseRouter              = ServiceLocator.injector.get(Router);
+        this.baseActivatedRoute      = ServiceLocator.injector.get(ActivatedRoute);
     }
+
+    ngOnInit() {
+        console.log('Parent Class :: ngOnInit');
+    }
+
+    callParentClassFunction() {
+        return 'Yes this is base class fucntion';
+    }
+
+    ngOnDestroy() {}
 
 
 }

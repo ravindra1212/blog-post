@@ -22,4 +22,12 @@
         Value may not be greater than {{ formObject.get(controlName).getError('maxLength').requiredLength }} charectors.
     </span>
 
+    <span class="text-danger fw-lighter float-end fst-italic" *ngIf="formObject.get(controlName).hasError('notMatch')">
+        {{ secondFieldLabel }} not matching with {{ firstFieldLabel }}.
+    </span>
+
+    <span class="text-danger fw-lighter float-end fst-italic" *ngIf="formObject.get(controlName).hasError('email')">
+        Invalid email address.
+    </span>
+
 </div>

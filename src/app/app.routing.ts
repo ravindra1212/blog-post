@@ -6,6 +6,7 @@ import { LoginComponent } from './components/login/login.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { LoginPageAccessService } from './services/login-page-access.service';
+import { SignupComponent } from './components/signup/signup.component';
 
 const routes: Routes = [
     { 
@@ -16,6 +17,11 @@ const routes: Routes = [
     { 
         path : 'login',
         component : LoginComponent,
+        canActivate: [LoginPageAccessService]
+    },
+    {
+        path: 'signup',
+        component: SignupComponent,
         canActivate: [LoginPageAccessService]
     },
     {

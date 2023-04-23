@@ -1,0 +1,70 @@
+<div class=" card p-4">
+    <div class="card-heading">
+        <h2 class="text-center">Signup</h2>
+        <hr>
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="shadow p-3 mb-5 bg-white rounded p-5">
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="fname">First Name</label>
+                    <input type="text" class="form-control" formControlName="fname" autocomplete="off" />
+                    <app-form-errors [formObject]="signupForm" controlName="fname"></app-form-errors>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="fname">Last Name</label>
+                    <input type="text" class="form-control" formControlName="lname" autocomplete="off" />
+                    <app-form-errors [formObject]="signupForm" controlName="lname"></app-form-errors>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" formControlName="email" autocomplete="off" />
+                    <app-form-errors [formObject]="signupForm" controlName="email"></app-form-errors>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" formControlName="password" autocomplete="off" />
+                    <app-form-errors [formObject]="signupForm" controlName="password"></app-form-errors>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="confirm_password">Please Enter Password Again</label>
+                    <input type="password" class="form-control" formControlName="confirm_password" autocomplete="off" />
+                    <app-form-errors 
+                        [formObject]="signupForm" 
+                        controlName="confirm_password"
+                        firstFieldLabel="Password"
+                        secondFieldLabel="Confirm Password"
+                    ></app-form-errors>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+
+            <button type="submit" [disabled]="signupForm.invalid" class="btn btn-success btn-sm btn-block">
+                Signup
+            </button>
+
+        </div>
+
+    </form>
+</div>

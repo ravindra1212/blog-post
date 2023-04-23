@@ -17,6 +17,8 @@ import { CardModule } from 'primeng/card';
 import { FileUploadModule } from 'primeng/fileupload';
 import { PostState } from './posts.state';
 import { PostsService } from './posts.service';
+import { SkeletonModule } from 'primeng/skeleton';
+import { PaginatorModule } from 'primeng/paginator';
 
 @NgModule({
     declarations: [
@@ -37,7 +39,9 @@ import { PostsService } from './posts.service';
         TimelineModule,
         CardModule,
         FileUploadModule,
-        HttpClientModule
+        HttpClientModule,
+        SkeletonModule,
+        PaginatorModule
     ],
     providers:[PostsService]
 })
