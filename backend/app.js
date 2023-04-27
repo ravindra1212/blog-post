@@ -13,7 +13,7 @@ const app = express();
 
 // Setup Connection to DB
 mongoose.set('strictQuery', true);
-mongoose.connect("mongodb+srv://ravindra-admin:ravi12mongodb@cluster0.pobjwhd.mongodb.net/db_blog_post?retryWrites=true&w=majority").then( 
+mongoose.connect("mongodb+srv://ravindra-admin:"+process.env.MONGO_ATLAS_PW+"@cluster0.pobjwhd.mongodb.net/db_blog_post?retryWrites=true&w=majority").then( 
         (sucess) => {
             console.log("Connected to database.");
         },
@@ -24,7 +24,9 @@ mongoose.connect("mongodb+srv://ravindra-admin:ravi12mongodb@cluster0.pobjwhd.mo
 
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended : false }));
-app.use("/images", express.static(path.join("/backend/images"))); // Provisinf access of backend/images folder
+app.use("/images", express.static(path.join(__dirname, "images")));
+app.use("/", express.static(path.join(__dirname, "angular")));
+ // Provisinf access of backend/images folder
 app.use( (req, res, next) => {
 
     res.setHeader(
@@ -49,6 +51,9 @@ app.use(cors());
 
 app.use("/api/posts", postRoutes); // attch posts routes
 app.use("/api/user", userRoutes); // attch users routes
+app.use((req, res, next) => {
+    res.sendFile(path.join(__dirname, "angular", "index.html"))
+});
 
 module.exports = app;
 

@@ -21,6 +21,7 @@ import { ServiceLocator } from '@core-services/service-locator.service';
 import { SignupComponent } from './components/signup/signup.component';
 import { FormErrorsComponent } from '@core/components/form-errors/form-errors.component';
 import { AuthInterceptor } from './services/auth-interceptor';
+import { ErrorInterceptor } from './services/error-interceptor';
 
 @NgModule({
     declarations: [
@@ -54,6 +55,11 @@ import { AuthInterceptor } from './services/auth-interceptor';
             provide :HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,
             multi:true
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: ErrorInterceptor,
+            multi: true
         }
     ],
     bootstrap: [AppComponent]

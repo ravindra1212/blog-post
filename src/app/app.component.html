@@ -17,13 +17,13 @@
 
             <div class="navbar-nav">
 
-                <ng-container *ngIf="baseAuthService.isLoggedIn()">
+                <ng-container *ngIf="isLoggedIn">
                     <a class="nav-item nav-link" routerLink="home">Home</a>
                     <a class="nav-item nav-link" routerLink="posts">Posts</a>
                     <a class="nav-item nav-link" href (click)="signOut()">Sign Out</a>
                 </ng-container>
 
-                <ng-container *ngIf="!baseAuthService.isLoggedIn()">
+                <ng-container *ngIf="!isLoggedIn">
                     <a class="nav-item nav-link" routerLink="login">Login</a>
                     <a class="nav-item nav-link" routerLink="signup">Sign Up</a>
                 </ng-container>

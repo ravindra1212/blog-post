@@ -40,11 +40,13 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         this.baseHttpService
             .postForm('http://localhost:3000/api/user/login', this.loginForm.getRawValue(), (response: any) => {
 
-            const token = response.token;
+            let requestData = response.data;
+
+            const token = requestData.token;
 
             if (token) { // if token present
 
-                const expiresInDuration = response.expiresIn;
+                const expiresInDuration = requestData.expiresIn;
 
                 // Start Token expry timer
                 this.baseAuthService.setTokenTimer(expiresInDuration);
@@ -54,10 +56,21 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
                 const expirationDate = now.getTime() + expiresInDuration * 1000;
                 
                 // Set the authorization token
-                this.baseAuthService.saveToken(response.token, expirationDate);
+                this.baseAuthService.saveToken(token, expirationDate);
+
+                // Tirgger Event of Auth Status
+                this.baseAuthService.authStatusListner.next(true);
+
+                // serUser information
+                this.baseAuthService.setUserData(requestData.user);
 
                 this.baseRouter.navigate(['./home']);
             }
+
+        }, (errorResponse:any) => {
+
+            // Tirgger Event of Auth Status
+            this.baseAuthService.authStatusListner.next(false);
         });
 
     }
@@ -66,7 +79,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
      * Garbase Clearup Function
      */
     ngOnDestroy(): void {
-        clearTimeout(this.tokenTimer);
+        this.baseAuthService.authStatusListner.unsubscribe();
     }
 
 }

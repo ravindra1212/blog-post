@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { NotifyService } from './notify.service';
 import { has, isFunction } from 'lodash-es';
 import { ErrorService } from './error.service';
+import { tap } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -100,10 +101,10 @@ export abstract class HttpService {
 
                 // Handle success message automatically
                 // if developer want to handle manually success message
-                // then he need to set "object" showSuccessMsg = false;
+                // then he need to set "showSuccessMsg" as "false" in "object".
                 const showSuccessMsg = has(object, 'showSuccessMsg') ? object.showSuccessMsg : true;
 
-                if (showSuccessMsg) { // check if 
+                if (showSuccessMsg) { // check if showSuccessMsg as true then show success notification
                     this.notifyService.success(response.message);
                 }
 

@@ -25,7 +25,7 @@ export class AuthService {
      * @return void
      */
     getAuthStatusListener() {
-        this.authStatusListner.asObservable();
+        return this.authStatusListner.asObservable();
     }
 
     /**
@@ -54,6 +54,14 @@ export class AuthService {
     }
 
     /**
+     * Remove user data from local storage 
+     * @return void
+     */
+    private clearUserData() {
+        localStorage.removeItem('userData');
+    }
+
+    /**
      * is Loggned In
      * @return boolean
      */
@@ -74,6 +82,7 @@ export class AuthService {
         this.authStatusListner.next(false);
         this.clearToken();
         clearTimeout(this.tokenTimer);
+        this.clearUserData();
 
         return true;
     }
@@ -86,7 +95,7 @@ export class AuthService {
 
         let userData = this.getUserData();
 
-        return userData.id;
+        return userData._id;
     }
 
     /**

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { Post } from './posts.interface';
 import { PostState } from './posts.state';
 import { BaseComponent } from '@core/components/base/base.component';
@@ -31,6 +31,7 @@ export class PostsComponent extends BaseComponent implements OnInit {
     totalRecords:number = 1;
     postsPerPage:number = 1;
     currentPage: number = 0;
+    isLoading:boolean = true;
 
     // @Select(PostState.getPostList) posts!: Observable<Post[]>;
 
@@ -67,7 +68,7 @@ export class PostsComponent extends BaseComponent implements OnInit {
             title   : ['', [Validators.required, Validators.minLength(2)]],
             body    : ['', [Validators.required, Validators.minLength(5)]],
             files   : [],
-            userId  : [this.baseAuthService.getUserId()],
+            creator : [this.baseAuthService.getUserId()],
         });
     } 
 
@@ -88,6 +89,7 @@ export class PostsComponent extends BaseComponent implements OnInit {
         this.baseHttpService.get(`http://localhost:3000/api/posts?page=${page}&pagesize=${pagesize}`, (responseData:any) => {
             this.posts = responseData.data;
             this.totalRecords = responseData.totalPosts;
+            this.isLoading = false;
         });
 
     }
@@ -114,7 +116,7 @@ export class PostsComponent extends BaseComponent implements OnInit {
         this.formTitle = `Edit Post : ${post.title}`;
         this.formBtnLabel = 'Update';
         this.postForm.patchValue(post);
-
+        
         // this.store.dispatch(new SetSelectedPost(post));
 
     }
@@ -133,15 +135,17 @@ export class PostsComponent extends BaseComponent implements OnInit {
         } else {
             url = `http://localhost:3000/api/posts/add`;
         }
-        
+
+        console.log({
+            postForm: this.postForm.value
+        });
+
         this.baseHttpService.postForm(url, {
-            payload  : this.postForm.value,
-            formData : true
+            payload      : this.postForm.value,
+            formData     : false
         }, (response:any) => {
 
             this.closeDialog(); // Close Dialog after sucess
-
-            this.baseNotifyService.success(response.message);
 
             this.getPosts(this.postsPerPage, this.currentPage); // Load 
         });
@@ -252,7 +256,6 @@ export class PostsComponent extends BaseComponent implements OnInit {
     onPageChange(event:any) {
         this.currentPage = event.page;
         this.postsPerPage = event.rows;
-        console.log(event, this.currentPage);
         this.getPosts(this.postsPerPage, event.currentPage);
     }
 
