@@ -142,12 +142,14 @@ export class PostsComponent extends BaseComponent implements OnInit {
 
         this.baseHttpService.postForm(url, {
             payload      : this.postForm.value,
-            formData     : false
+            formData     : false,
+            showSuccessMsg : false
         }, (response:any) => {
 
             this.closeDialog(); // Close Dialog after sucess
 
             this.getPosts(this.postsPerPage, this.currentPage); // Load 
+            
         });
 
         // if (postId) {
