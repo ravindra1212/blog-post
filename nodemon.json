@@ -1,6 +1,6 @@
 {
     "env" : {
-        "MONGO_ATLAS_PW" : "ravi12mongodb",
+        "MONGO_ATLAS_PW" : "",
         "JWT_KEY" : "AUTH_TOKEN_SECRET"
     }
 }
