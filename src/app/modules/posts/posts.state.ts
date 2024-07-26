@@ -23,7 +23,7 @@ export class PostState {
     constructor(private postService: PostsService) {}
 
     @Selector()
-    static getPostList(state: PostStateModel) {
+    static get(state: PostStateModel) {
         return state.posts;
     }
 
