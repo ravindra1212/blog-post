@@ -44,6 +44,7 @@ export class SignupComponent extends BaseComponent implements OnInit {
         }
 
         this.baseHttpService.postForm('http://localhost:3000/api/user/signup', {
+            formGroup : this.signupForm,
             payload: this.signupForm.getRawValue()
         }, (response:any) => {
             this.baseRouter.navigate(['./login']);

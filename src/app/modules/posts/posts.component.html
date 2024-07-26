@@ -18,9 +18,11 @@
                 <p-skeleton styleClass="mb-2"></p-skeleton>
             </ng-container>
             <ng-container *ngIf="!isLoading">
+
                 <p-table 
-                    [value]="posts" 
+                    [value]="(posts$ | async)!" 
                     styleClass="p-datatable-gridlines"
+                    paginate="false"
                 >
                     <ng-template pTemplate="header">
                         <tr>
@@ -71,11 +73,6 @@
                         <p-button type="button" icon="pi pi-plus" styleClass="p-button-text"></p-button>
                     </ng-template>
                 </p-table>
-                <div *ngIf="posts.length > 0">
-                    <p-paginator (onPageChange)="onPageChange($event)" [first]="currentPage" [rows]="postsPerPage"
-                        [totalRecords]="totalRecords">
-                    </p-paginator>
-                </div>
             </ng-container>
 
         </div>

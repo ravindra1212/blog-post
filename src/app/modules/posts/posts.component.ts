@@ -3,10 +3,11 @@ import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { Select, Store } from '@ngxs/store';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, first, map, tap } from 'rxjs';
 import { Post } from './posts.interface';
 import { PostState } from './posts.state';
 import { BaseComponent } from '@core/components/base/base.component';
+import { AddPost, DeletePost, GetPosts, UpdatePost } from './posts.action';
 
 @Component({
     selector: 'app-posts',
@@ -15,7 +16,7 @@ import { BaseComponent } from '@core/components/base/base.component';
 })
 export class PostsComponent extends BaseComponent implements OnInit {
 
-    posts: Array<any>[] = [];
+    posts: Observable<Post[]> | undefined;
     cols: any[] = [];
     postForm:any;
     display:boolean = false;
@@ -32,9 +33,7 @@ export class PostsComponent extends BaseComponent implements OnInit {
     postsPerPage:number = 1;
     currentPage: number = 0;
     isLoading:boolean = true;
-
-    // @Select(PostState.getPostList) posts!: Observable<Post[]>;
-
+    @Select(PostState.getAllPosts) posts$: any;
     constructor(
         private formBuilder : FormBuilder,
         private store: Store
@@ -54,7 +53,10 @@ export class PostsComponent extends BaseComponent implements OnInit {
 
         this.getPosts(this.postsPerPage, 1); // Load 
 
-        // this.store.dispatch(new GetPosts());
+        // Get all posts from so
+        this.store.dispatch(new GetPosts()).subscribe((response:any) => {
+            this.isLoading = false;
+        });
     }
 
     /**
@@ -141,24 +143,41 @@ export class PostsComponent extends BaseComponent implements OnInit {
         });
 
         this.baseHttpService.postForm(url, {
-            payload      : this.postForm.value,
+            payload      : this.postForm.getRawValue(),
             formData     : false,
             showSuccessMsg : false
         }, (response:any) => {
 
+            // if (postId) {
+            //     this.store.dispatch(new UpdatePost(this.postForm.value, this.postForm.value._id)).subscribe(() => {
+            //        // this.clearForm();
+            //     });
+            // } else {
+            //     this.store.dispatch(new AddPost(this.postForm.getRawValue())).subscribe(() => {
+            //         // this.clearForm();
+            //     });
+            // }
+            this.store.dispatch(new GetPosts());
+            
             this.closeDialog(); // Close Dialog after sucess
-
-            this.getPosts(this.postsPerPage, this.currentPage); // Load 
             
         });
 
         // if (postId) {
-        //     this.store.dispatch(new UpdatePost(this.postForm.value, this.postForm.value._id)).subscribe(() => {
+        //     this.store.dispatch(new UpdatePost(this.postForm.value, this.postForm.value._id)).subscribe((data:any) => {
+        //         this.closeDialog();
         //         this.clearForm();
+        //         console.log({
+        //             data: data
+        //         });
         //     });
         // } else {
-        //     this.store.dispatch(new AddPost(this.postForm.value)).subscribe(() => {
+        //     this.store.dispatch(new AddPost(this.postForm.value)).subscribe((data:any) => {
+        //         this.closeDialog();
         //         this.clearForm();
+        //         console.log({
+        //             data: data
+        //         });
         //     });
         // }
 
@@ -195,12 +214,12 @@ export class PostsComponent extends BaseComponent implements OnInit {
         }, 
         (accepResponse:any) => {
 
-            this.baseHttpService.delete(`http://localhost:3000/api/posts/${postId}/delete`, {}, (response: any) => {
-                this.baseNotifyService.success(response.message);
-                this.getPosts(this.postsPerPage, this.currentPage); // Load 
-            });
+            // this.baseHttpService.delete(`http://localhost:3000/api/posts/${postId}/delete`, {}, (response: any) => {
+            //     this.baseNotifyService.success(response.message);
+            //     this.getPosts(this.postsPerPage, this.currentPage); // Load 
+            // });
 
-            // this.store.dispatch(new DeletePost(postId));
+            this.store.dispatch(new DeletePost(postId));
 
         }, (rejectResponse: any) => {});
 

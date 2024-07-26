@@ -74,7 +74,10 @@ export abstract class HttpService {
         if (has(object, 'spinner') == false || (has(object, 'spinner') == true && object.spinner !== false)) {
            // this.spinnerService.show(); // Show spinner
         }
-
+        
+        // current formGroup object
+        let formGroup = has(object, 'formGroup') ? object.formGroup : '';
+        
         let payload = has(object, 'payload') ? object.payload : object;
 
         // Check if "formData" is present then payload will be formated as 'multi/part'
@@ -96,7 +99,10 @@ export abstract class HttpService {
                 this.spinnerService.hide(); // Hide Spinner
 
                 if (isFunction(sucessCallback)) {
-                    sucessCallback.call(this, response);
+                    sucessCallback.call(this, response, {
+                        spinnerService: this.spinnerService,
+                        notifyService: this.notifyService
+                    });
                 }
 
                 // Handle success message automatically
@@ -114,7 +120,10 @@ export abstract class HttpService {
                 this.spinnerService.hide(); // Hide Spinner
 
                 if (isFunction(errorCallBack)) {
-                    errorCallBack.call(this, error);
+                    errorCallBack.call(this, error, {
+                        spinnerService: this.spinnerService,
+                        notifyService: this.notifyService
+                    });
                 }
 
                 this.notifyService.error(ErrorService.getHttpErrMsg(error));

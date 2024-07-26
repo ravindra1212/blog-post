@@ -23,7 +23,7 @@ export class PostState {
     constructor(private postService: PostsService) {}
 
     @Selector()
-    static get(state: PostStateModel) {
+    static getAllPosts(state: PostStateModel) {
         return state.posts;
     }
 
@@ -34,32 +34,40 @@ export class PostState {
 
     @Action(GetPosts)
     getPosts({ getState, setState }: StateContext<PostStateModel>) {
-        return this.postService.fetchPosts().pipe(tap((result) => {
+        return this.postService.fetchPosts().pipe(tap((result:any) => {
             const state = getState();
+            
             setState({
                 ...state,
-                posts: result,
+                posts: result['data'],
             });
         }));
     }
 
     @Action(AddPost)
     addPost({ getState, patchState }: StateContext<PostStateModel>, { payload }: AddPost) {
-        return this.postService.addPost(payload).pipe(tap((result) => {
+
+        const state = getState();
+        
+        return this.postService.addPost(payload).pipe(tap((result:any) => {
             const state = getState();
             patchState({
-                posts: [...state.posts, result]
+                posts: [...state.posts, result['data']]
             });
         }));
     }
 
     @Action(UpdatePost)
     updatePost({ getState, setState }: StateContext<PostStateModel>, { payload, id }: UpdatePost) {
-        return this.postService.updatePost(payload, id).pipe(tap((result) => {
+
+        return this.postService.updatePost(payload, id).pipe(tap((result:any) => {
             const state = getState();
             const postList = [...state.posts];
             const postIndex = postList.findIndex(item => item._id === id);
-            postList[postIndex] = result;
+            console.log({
+                result: result
+            });
+            postList[postIndex] = result['data'];
             setState({
                 ...state,
                 posts: postList,
